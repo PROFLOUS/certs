@@ -1,0 +1,625 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.root{padding:1.5rem 0}
+.header{margin-bottom:1.5rem}
+.header h1{font-size:22px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.header p{font-size:14px;color:var(--color-text-secondary)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px}
+.stat-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.stat-value{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.week-tabs{display:flex;gap:8px;margin-bottom:1rem;border-bottom:0.5px solid var(--color-border-tertiary);padding-bottom:0}
+.tab{padding:8px 16px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--color-text-primary)}
+.tab.active{color:var(--color-text-primary);font-weight:500;border-bottom-color:var(--color-text-primary)}
+.week-content{display:none}
+.week-content.active{display:block}
+.week-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:1rem;padding:14px 16px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary)}
+.week-badge{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;font-size:13px;font-weight:500;flex-shrink:0}
+.w1-badge{background:#EEEDFE;color:#3C3489}
+.w2-badge{background:#E1F5EE;color:#085041}
+.w3-badge{background:#FAEEDA;color:#633806}
+.w4-badge{background:#E6F1FB;color:#0C447C}
+.week-header-text h3{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.week-header-text p{font-size:13px;color:var(--color-text-secondary)}
+.obj-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:500}
+.pill-purple{background:#EEEDFE;color:#3C3489}
+.pill-teal{background:#E1F5EE;color:#085041}
+.pill-amber{background:#FAEEDA;color:#633806}
+.pill-blue{background:#E6F1FB;color:#0C447C}
+.days-grid{display:flex;flex-direction:column;gap:8px}
+.day-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden}
+.day-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--color-background-secondary);cursor:pointer;user-select:none}
+.day-label{font-size:13px;font-weight:500;color:var(--color-text-primary);min-width:80px}
+.day-title{font-size:13px;color:var(--color-text-secondary);flex:1}
+.day-time{font-size:12px;color:var(--color-text-secondary);display:flex;align-items:center;gap:4px}
+.day-chevron{font-size:14px;color:var(--color-text-secondary);transition:transform .2s}
+.day-body{display:none;padding:12px 14px;border-top:0.5px solid var(--color-border-tertiary)}
+.day-body.open{display:block}
+.day-chevron.open{transform:rotate(180deg)}
+.topic-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.topic-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--color-text-primary);line-height:1.5}
+.topic-item::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--color-text-secondary);margin-top:6px;flex-shrink:0}
+.resource-row{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary);margin-top:8px;padding-top:8px;border-top:0.5px solid var(--color-border-tertiary)}
+.res-badge{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:500}
+.res-doc{background:#E6F1FB;color:#0C447C}
+.res-tut{background:#E1F5EE;color:#085041}
+.res-lab{background:#FAEEDA;color:#633806}
+.res-quiz{background:#EEEDFE;color:#3C3489}
+.weekend-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:14px;margin-top:4px}
+.weekend-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.checklist{list-style:none;display:flex;flex-direction:column;gap:5px}
+.checklist li{font-size:13px;color:var(--color-text-secondary);display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.check-icon{color:#1D9E75;font-size:15px;margin-top:-1px;flex-shrink:0}
+.tip-box{margin-top:1.5rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;border-left:3px solid #7F77DD}
+.tip-box p{font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.tip-box strong{color:var(--color-text-primary);font-weight:500}
+</style>
+
+<div class="root">
+  <h2 class="sr-only">Lộ trình ôn thi Terraform Associate 004 trong 4 tuần</h2>
+
+  <div class="header">
+    <h1>Lộ trình ôn thi Terraform Associate 004</h1>
+    <p>Terraform 1.12 · 8 objectives · 4 tuần · ~1.5–2h/ngày</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Thời gian</div><div class="stat-value">4 tuần</div></div>
+    <div class="stat"><div class="stat-label">Objectives</div><div class="stat-value">8 obj</div></div>
+    <div class="stat"><div class="stat-label">Mỗi ngày</div><div class="stat-value">~1.5h</div></div>
+    <div class="stat"><div class="stat-label">Lab thực hành</div><div class="stat-value">12+</div></div>
+  </div>
+
+  <div class="week-tabs">
+    <button class="tab active" onclick="switchWeek(1)">Tuần 1</button>
+    <button class="tab" onclick="switchWeek(2)">Tuần 2</button>
+    <button class="tab" onclick="switchWeek(3)">Tuần 3</button>
+    <button class="tab" onclick="switchWeek(4)">Tuần 4</button>
+  </div>
+
+  <!-- WEEK 1 -->
+  <div id="week-1" class="week-content active">
+    <div class="week-header">
+      <div class="week-badge w1-badge">W1</div>
+      <div class="week-header-text">
+        <h3>IaC Concepts + Terraform Fundamentals</h3>
+        <p>Nền tảng lý thuyết, cài đặt môi trường, hiểu providers và state</p>
+        <div class="obj-pills">
+          <span class="pill pill-purple">Obj 1 · IaC</span>
+          <span class="pill pill-purple">Obj 2 · Fundamentals</span>
+        </div>
+      </div>
+    </div>
+    <div class="days-grid">
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 2</span>
+          <span class="day-title">IaC là gì? Tại sao Terraform?</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Đọc: What is Terraform? + Infrastructure as Code blog post</li>
+            <li class="topic-item">Hiểu lợi thế IaC: idempotent, version control, automation</li>
+            <li class="topic-item">Phân biệt declarative vs imperative (Terraform vs Ansible/scripts)</li>
+            <li class="topic-item">Terraform use cases: multi-cloud, hybrid cloud</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-doc">Doc</span>terraform.io/intro
+            <span class="res-badge res-doc" style="margin-left:8px">Doc</span>hashicorp.com/blog/iac
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 3</span>
+          <span class="day-title">Cài đặt Terraform + Hello World</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Cài Terraform CLI (brew/apt/chocolatey), kiểm tra `terraform version`</li>
+            <li class="topic-item">Tutorial: Introduction to IaC with Terraform (AWS hoặc Docker)</li>
+            <li class="topic-item">Viết file main.tf đầu tiên với provider + resource</li>
+            <li class="topic-item">Chạy init → plan → apply → destroy thủ công</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>aws-get-started/infrastructure-as-code
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 4</span>
+          <span class="day-title">Providers: cài, version, lock file</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Hiểu how Terraform works with plugins (provider = plugin)</li>
+            <li class="topic-item">Cấu trúc `required_providers` block trong terraform block</li>
+            <li class="topic-item">`.terraform.lock.hcl`: tại sao cần commit file này?</li>
+            <li class="topic-item">Tutorial: Lock and Upgrade Provider Versions</li>
+            <li class="topic-item">Phân biệt `~>`, `>=`, `=` trong version constraints</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>provider-versioning
+            <span class="res-badge res-doc" style="margin-left:8px">Doc</span>dependency-lock
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 5</span>
+          <span class="day-title">Terraform State: mục đích và cơ chế</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Đọc: Purpose of Terraform State — 3 lý do chính (mapping, metadata, performance)</li>
+            <li class="topic-item">Mở file `terraform.tfstate` xem cấu trúc JSON thực tế</li>
+            <li class="topic-item">Tại sao KHÔNG nên edit state file thủ công?</li>
+            <li class="topic-item">State và sensitive data — state có lưu secrets không?</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-doc">Doc</span>state/purpose
+            <span class="res-badge res-tut" style="margin-left:8px">Tutorial</span>state/state-cli
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 6</span>
+          <span class="day-title">Multiple providers + Get Started collection</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Viết config dùng 2 providers trong cùng 1 workspace</li>
+            <li class="topic-item">Hoàn thành hết Get Started collection (AWS/Azure/GCP/Docker)</li>
+            <li class="topic-item">Ôn lại: provider block, alias, multiple instances</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>aws-get-started · Hoàn thành cả collection
+          </div>
+        </div>
+      </div>
+
+      <div class="weekend-card">
+        <div class="weekend-title"><i class="ti ti-calendar-event" aria-hidden="true"></i>Cuối tuần — Củng cố</div>
+        <ul class="checklist">
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Viết lại từ đầu 1 config không dùng tài liệu</li>
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Tự trả lời: IaC là gì, lợi thế gì, Terraform khác gì công cụ khác</li>
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Làm sample questions Obj 1 & 2 trên HashiCorp</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tip-box"><p><strong>Tip W1:</strong> Với background DevOps, tuần này sẽ nhanh. Đừng bỏ qua phần state — đây là topic hay ra thi nhất. Nếu đã dùng Terraform ở công ty, hãy đọc docs để điền vào lý thuyết còn thiếu.</p></div>
+  </div>
+
+  <!-- WEEK 2 -->
+  <div id="week-2" class="week-content">
+    <div class="week-header">
+      <div class="week-badge w2-badge">W2</div>
+      <div class="week-header-text">
+        <h3>Core Workflow + Terraform Configuration (HCL)</h3>
+        <p>Thành thạo CLI commands, HCL syntax, variables, functions, lifecycle</p>
+        <div class="obj-pills">
+          <span class="pill pill-teal">Obj 3 · Core Workflow</span>
+          <span class="pill pill-teal">Obj 4 · Configuration</span>
+        </div>
+      </div>
+    </div>
+    <div class="days-grid">
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 2</span>
+          <span class="day-title">Core workflow: init, fmt, validate, plan</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Đọc: Core Terraform Workflow documentation</li>
+            <li class="topic-item">Tutorial: Initialize + Plan — hiểu từng output của `terraform plan`</li>
+            <li class="topic-item">Thực hành: `terraform fmt -recursive`, `terraform validate`</li>
+            <li class="topic-item">Dependency graph: `terraform graph | dot -png` — xem visual</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>cli/init · cli/plan
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 3</span>
+          <span class="day-title">apply, destroy + resource targeting</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Tutorial: Apply Terraform Configuration — các flags quan trọng</li>
+            <li class="topic-item">`-auto-approve`, `-target`, `-replace`, `-refresh-only`</li>
+            <li class="topic-item">`terraform destroy` vs `terraform apply -destroy`</li>
+            <li class="topic-item">Tutorial: Target resources (resource addressing syntax)</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>cli/apply · state/resource-targeting
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 4</span>
+          <span class="day-title">Resources, Data sources, Dependencies</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Phân biệt `resource` vs `data` block: khi nào dùng cái nào?</li>
+            <li class="topic-item">Reference syntax: `resource_type.name.attribute`</li>
+            <li class="topic-item">Implicit vs explicit dependencies (`depends_on`)</li>
+            <li class="topic-item">Tutorial: Create resource dependencies — thực hành</li>
+            <li class="topic-item">meta-arguments: `count`, `for_each`, `provider`, `lifecycle`</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>configuration-language/resource · data-sources · dependencies
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 5</span>
+          <span class="day-title">Variables, Outputs, Complex types</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Variable types: string, number, bool, list, map, set, object, tuple</li>
+            <li class="topic-item">Cách set variables: tfvars file, env var, CLI flag, default</li>
+            <li class="topic-item">Output values: dùng để expose data, dùng trong modules</li>
+            <li class="topic-item">Tutorial: Customize config with variables + Output data</li>
+            <li class="topic-item">Complex type constraints: `list(string)`, `map(number)`, `object({...})`</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>configuration-language/variables · outputs
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 6</span>
+          <span class="day-title">Functions, Lifecycle, Sensitive data, Checks</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Built-in functions: toset(), merge(), lookup(), length(), contains()...</li>
+            <li class="topic-item">Dynamic expressions: for, conditional (ternary), splat</li>
+            <li class="topic-item">Lifecycle rules: `create_before_destroy`, `prevent_destroy`, `ignore_changes`</li>
+            <li class="topic-item">Custom conditions: `precondition`, `postcondition`, `check` blocks</li>
+            <li class="topic-item">Sensitive variables + Vault provider basics</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>functions · expressions · custom-conditions · checks
+          </div>
+        </div>
+      </div>
+
+      <div class="weekend-card">
+        <div class="weekend-title"><i class="ti ti-calendar-event" aria-hidden="true"></i>Cuối tuần — Lab tổng hợp</div>
+        <ul class="checklist">
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Lab: tạo infra dùng data sources + resource references</li>
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Lab: dùng for_each với map variable để tạo nhiều resources</li>
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Làm sample questions Obj 3 & 4</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tip-box"><p><strong>Tip W2:</strong> Obj 4 chiếm tỷ trọng lớn nhất trong đề thi. Tập trung vào variables (cách set, thứ tự ưu tiên), lifecycle, và sensitive data. Functions hay bị hỏi: <code>toset()</code>, <code>merge()</code>, <code>coalesce()</code>.</p></div>
+  </div>
+
+  <!-- WEEK 3 -->
+  <div id="week-3" class="week-content">
+    <div class="week-header">
+      <div class="week-badge w3-badge">W3</div>
+      <div class="week-header-text">
+        <h3>Modules + State Management + Maintain Infrastructure</h3>
+        <p>Tổ chức code với modules, quản lý state nâng cao, import và troubleshoot</p>
+        <div class="obj-pills">
+          <span class="pill pill-amber">Obj 5 · Modules</span>
+          <span class="pill pill-amber">Obj 6 · State Mgmt</span>
+          <span class="pill pill-amber">Obj 7 · Maintain</span>
+        </div>
+      </div>
+    </div>
+    <div class="days-grid">
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 2</span>
+          <span class="day-title">Modules: khái niệm, structure, sources</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Module sources: Registry, GitHub, local path, S3...</li>
+            <li class="topic-item">Standard module structure: main.tf, variables.tf, outputs.tf, README.md</li>
+            <li class="topic-item">Tutorial: Use Registry Modules in Configuration</li>
+            <li class="topic-item">Versioning module từ Registry (`version = "~> 3.0"`)</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>modules/module-use
+            <span class="res-badge res-doc" style="margin-left:8px">Doc</span>modules/develop/structure
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 3</span>
+          <span class="day-title">Tạo local module, variable scope, providers</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Tutorial: Build and use a local module từ đầu</li>
+            <li class="topic-item">Variable scope: root module vs child module</li>
+            <li class="topic-item">Truyền input variables, nhận outputs từ module</li>
+            <li class="topic-item">Providers trong modules: inheritance vs explicit</li>
+            <li class="topic-item">Module composition — tránh nested modules sâu</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>modules/module-create
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 4</span>
+          <span class="day-title">State: backends, locking, remote state</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Local backend vs remote backends (S3, GCS, Azure Blob, HCP Terraform)</li>
+            <li class="topic-item">State locking: tại sao cần? (concurrent writes) — DynamoDB cho S3</li>
+            <li class="topic-item">Cấu hình `backend` block trong terraform block</li>
+            <li class="topic-item">`terraform_remote_state` data source — share state giữa workspaces</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-doc">Doc</span>state/backends · backend · state/locking
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 5</span>
+          <span class="day-title">Drift, moved/removed blocks, refresh-only</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Resource drift là gì? `terraform plan -refresh-only` để detect</li>
+            <li class="topic-item">`moved` block: rename/refactor resources không destroy</li>
+            <li class="topic-item">`removed` block: remove từ state nhưng không destroy real resource</li>
+            <li class="topic-item">Tutorial: Manage Resource Drift + Use Refresh-Only Mode</li>
+            <li class="topic-item">`terraform state list`, `show`, `mv`, `rm` commands</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>state/resource-drift · state/refresh · state/move-config
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 6</span>
+          <span class="day-title">Import, CLI inspect, verbose logging</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Tutorial: Import Terraform Configuration (2 cách: CLI + import block)</li>
+            <li class="topic-item">Import block trong config (Terraform 1.5+): `import { to = ... id = ... }`</li>
+            <li class="topic-item">`terraform show`, `terraform state list`, `terraform state show`</li>
+            <li class="topic-item">TF_LOG levels: TRACE, DEBUG, INFO, WARN, ERROR + TF_LOG_PATH</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>state/state-import · state/state-cli
+            <span class="res-badge res-doc" style="margin-left:8px">Doc</span>internals/debugging
+          </div>
+        </div>
+      </div>
+
+      <div class="weekend-card">
+        <div class="weekend-title"><i class="ti ti-calendar-event" aria-hidden="true"></i>Cuối tuần — Lab nâng cao</div>
+        <ul class="checklist">
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Lab: tạo module reusable, dùng lại trong 2 environments (dev/prod)</li>
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Lab: cấu hình S3 backend + DynamoDB locking (hoặc HCP Terraform)</li>
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Lab: import 1 resource có sẵn vào Terraform</li>
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Làm sample questions Obj 5, 6, 7</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tip-box"><p><strong>Tip W3:</strong> State management là điểm phân biệt candidate giỏi. Hiểu rõ sự khác nhau giữa <code>moved</code> block và <code>terraform state mv</code>, giữa <code>removed</code> và <code>terraform state rm</code>. Import block (khai báo trong config) là cách mới — exam có thể hỏi.</p></div>
+  </div>
+
+  <!-- WEEK 4 -->
+  <div id="week-4" class="week-content">
+    <div class="week-header">
+      <div class="week-badge w4-badge">W4</div>
+      <div class="week-header-text">
+        <h3>HCP Terraform + Ôn tập + Mock Exam</h3>
+        <p>HCP Terraform toàn diện, ôn tập điểm yếu, luyện đề và thi thử</p>
+        <div class="obj-pills">
+          <span class="pill pill-blue">Obj 8 · HCP Terraform</span>
+          <span class="pill pill-blue">Ôn tập tổng hợp</span>
+          <span class="pill pill-blue">Mock exam</span>
+        </div>
+      </div>
+    </div>
+    <div class="days-grid">
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 2</span>
+          <span class="day-title">HCP Terraform: workspaces, runs, CLI workflow</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Đăng ký tài khoản HCP Terraform free (app.terraform.io)</li>
+            <li class="topic-item">Tutorial: Get Started HCP Terraform — tạo workspace, run đầu tiên</li>
+            <li class="topic-item">`terraform login` + cloud block trong config</li>
+            <li class="topic-item">Remote operations: plan/apply chạy trên HCP cloud</li>
+            <li class="topic-item">Tutorial: Migrate state to HCP Terraform</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>cloud-get-started · cloud/cloud-migrate
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 3</span>
+          <span class="day-title">HCP Terraform: projects, variable sets, triggers</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Projects: tổ chức workspaces theo team/environment</li>
+            <li class="topic-item">Variable sets: share variables across multiple workspaces</li>
+            <li class="topic-item">Run triggers: workspace A trigger workspace B khi apply thành công</li>
+            <li class="topic-item">`terraform_remote_state` trong HCP Terraform context</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>cloud/projects · cloud/cloud-multiple-variable-sets · cloud/cloud-run-triggers
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 4</span>
+          <span class="day-title">HCP Terraform: governance, drift, policies</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>90 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Teams & permissions: organization, workspace-level access</li>
+            <li class="topic-item">Health assessments + workspace health overview</li>
+            <li class="topic-item">Drift detection trên HCP Terraform (continuous)</li>
+            <li class="topic-item">Policy enforcement: Sentinel vs OPA — biết sự khác nhau</li>
+            <li class="topic-item">Dynamic provider credentials — không cần hardcode secrets</li>
+            <li class="topic-item">Explorer, Change Requests (tính năng mới Terraform 004)</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-tut">Tutorial</span>cloud/drift-detection · cloud/drift-and-policy · cloud/dynamic-credentials
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 5</span>
+          <span class="day-title">Ôn tập điểm yếu + Sample Questions</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>120 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Làm toàn bộ Sample Questions trên HashiCorp Developer</li>
+            <li class="topic-item">Review các câu sai → đọc lại doc tương ứng</li>
+            <li class="topic-item">Flashcard: commands, flags, concepts hay nhầm</li>
+            <li class="topic-item">Xem lại: variable precedence order (env var vs tfvars vs default)</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-quiz">Quiz</span>associate-questions-004
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <span class="day-label">Thứ 6</span>
+          <span class="day-title">Mock exam + Review tổng thể</span>
+          <span class="day-time"><i class="ti ti-clock" aria-hidden="true"></i>120 phút</span>
+          <i class="ti ti-chevron-down day-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="day-body">
+          <ul class="topic-list">
+            <li class="topic-item">Làm mock exam (Udemy/ExamTopics/HashiCorp Study Guide)</li>
+            <li class="topic-item">Target score ≥ 80% trước khi đặt lịch thi thật</li>
+            <li class="topic-item">Review exam content list lần cuối — tick từng sub-objective</li>
+            <li class="topic-item">Đặt lịch thi: PSI exams (online proctored), duration 60 phút, 57 câu</li>
+          </ul>
+          <div class="resource-row">
+            <span class="res-badge res-quiz">Mock</span>Luyện đề tổng hợp ≥ 57 câu
+          </div>
+        </div>
+      </div>
+
+      <div class="weekend-card">
+        <div class="weekend-title"><i class="ti ti-calendar-event" aria-hidden="true"></i>Cuối tuần — Ngày trước thi</div>
+        <ul class="checklist">
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Không học thêm kiến thức mới — chỉ ôn lại điểm yếu</li>
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Đọc lại exam content list, confirm hiểu tất cả sub-objectives</li>
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Chuẩn bị: ID, phòng yên tĩnh (online proctored)</li>
+          <li><i class="ti ti-check check-icon" aria-hidden="true"></i>Nghỉ ngơi — đầu óc tỉnh táo quan trọng hơn cramming</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tip-box"><p><strong>Tip W4:</strong> Obj 8 (HCP Terraform) có nhiều tính năng mới trong 004 so với 003: Explorer, Change Requests, Dynamic Credentials. Đừng bỏ qua. Passing score là <strong>70%</strong> — target 80%+ khi luyện đề để có buffer.</p></div>
+  </div>
+</div>
+
+<script>
+function switchWeek(n){
+  document.querySelectorAll('.week-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('week-'+n).classList.add('active');
+  document.querySelectorAll('.tab')[n-1].classList.add('active');
+}
+function toggleDay(header){
+  const body=header.nextElementSibling;
+  const chevron=header.querySelector('.day-chevron');
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  chevron.classList.toggle('open',!isOpen);
+}
+</script>
